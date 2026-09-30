@@ -58,7 +58,7 @@ A primary objective of this study is demonstrating model validation behavior acr
 
 Follow these steps to set up the environment, populate the database, execute SQL analytics, and run the comparative benchmark study locally:
 
-```bash
+
 # 1. Clone the Repository
 git clone [https://github.com/iwannarigds-png/ecommerce-sql-forecasting.git](https://github.com/iwannarigds-png/ecommerce-sql-forecasting.git)
 cd ecommerce-sql-forecasting
