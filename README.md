@@ -1,6 +1,6 @@
 # E-commerce SQL Analytics & Methodological Benchmark Forecasting Study
 
-A comprehensive data engineering, star-schema analytics, and time-series forecasting study designed to evaluate retail revenue trends and perform a **rigorous benchmark comparison between Synthetic Data and Real-World Series**.
+A comprehensive data engineering, star-schema analytics, and time-series forecasting study designed to evaluate retail revenue trends and perform a **rigorous benchmark comparison between Synthetic Data and Authentic Real-World Series**.
 
 ---
 
@@ -8,31 +8,35 @@ A comprehensive data engineering, star-schema analytics, and time-series forecas
 
 This repository showcases an end-to-end analytical workflow structured around three core pillars:
 1. **Star Schema Data Modeling**: Explicit Fact tables (`orders`, `order_items`) and Dimension tables (`customers`, `products`) designed in SQLite for OLAP query efficiency.
-2. **Advanced SQL Analytics**: Analytical queries utilizing window functions (`DENSE_RANK()`, `SUM() OVER()`), multi-table JOINs, and time-series aggregations for exploratory data analysis on synthetic data.
-3. **Methodological Forecasting Benchmark Study**: Implements **Holt-Winters Exponential Smoothing** (`run_comparison.py`) across two distinct data sources (Source A: Unstructured Synthetic Data vs. Source B: Authentic Real-World Demand Data) to evaluate predictive model performance and baseline persistence.
+2. **Advanced SQL Analytics**: Analytical queries utilizing window functions (`DENSE_RANK()`, `SUM() OVER()`), multi-table JOINs, and time-series aggregations for exploratory data analysis on synthetic database schema.
+3. **Methodological Forecasting Benchmark Study**: Implements **Holt-Winters Exponential Smoothing** (`run_comparison.py`) across two distinct data sources to evaluate predictive performance against dual naive baselines (Simple Persistence $t-1$ and Seasonal Persistence $t-7$) over an extended 28-day holdout window.
 
 ---
 
-## Benchmark Study: Synthetic Data vs. Real-World Series
+## Benchmark Study: Unstructured Synthetic vs. Authentic Series
 
 A primary objective of this study is demonstrating how model evaluation varies significantly between unconstrained synthetic noise and real-world trended time series.
 
-### Methodological Benchmark Metrics (7-Day Holdout Evaluation)
+### Methodological Benchmark Metrics (28-Day Holdout Evaluation | Fixed Seed: 42)
 
-| Metric | Source A (Synthetic Data) | Source B (Authentic Real Data) | Operational Takeaway |
+| Metric (28-Day Holdout Window) | Source A (Unstructured Synthetic) | Source B (AirPassengers Real Demand Series) | Operational Takeaway |
 | :--- | :--- | :--- | :--- |
-| **Holdout MAE** | **$1,292.51** | **$3,527.48** | Real data dynamics reflect higher scale and variance. |
-| **Holdout RMSE** | **$1,826.82** | **$4,037.17** | Captures magnitude of penalization for extreme residuals. |
-| **Holdout MAPE** | **32.8%** | **15.2%** | Substantially lower relative percentage error on real series. |
-| **Naive Baseline MAE** | $2,432.29 | $3,366.92 | Evaluated against persistence forecasting ($t = t-1$). |
-| **Baseline Improvement** | **+46.9%** | **-4.8%** | Highlighted the strength of simple naive baselines on volatile real series. |
+| **Holt-Winters MAE** | **$1,244.10** | **$5,091.48** | Evaluates absolute forecast drift over a 4-week horizon. |
+| **Holt-Winters RMSE** | **$1,553.45** | **$5,681.15** | Penalizes severe residual deviations. |
+| **Holt-Winters MAPE** | **44.4%** | **28.7%** | Relative percentage error across daily volume. |
+| **Simple Naive MAE ($t-1$)** | $1,454.46 | $4,160.42 | Evaluated against standard daily persistence baseline. |
+| **Seasonal Naive MAE ($t-7$)** | $1,767.89 | $4,086.74 | Evaluated against weekly seasonal persistence baseline. |
+| **Imp. vs Simple Naive** | **+14.5%** | **-22.4%** | Holt-Winters underperforms simple persistence on real series. |
+| **Imp. vs Seasonal Naive** | **+29.6%** | **-24.6%** | Seasonal naive ($t-7$) outperforms Holt-Winters on real series. |
+
+*Note: All data transformation pipelines and model initialization protocols use `np.random.seed(42)` to guarantee 100% deterministic reproducibility.*
 
 ### Comparative Benchmark Visualization
 ![Synthetic vs Real Benchmark](synthetic_vs_real_benchmark.png)
 
 ### Key Analytical Findings
-1. **Relative Error Discrepancy**: Synthetic unstructured noise results in a high MAPE (32.8%), whereas real-world trended data allows the Holt-Winters model to stabilize relative percentage error at 15.2%.
-2. **Naive Baseline Dynamics**: On volatile real-world time series, naive persistence ($t = t-1$) remains a highly competitive baseline (-4.8% delta), proving that complex smoothing models must be continuously audited against simple heuristics.
+1. **Persistence Baseline Dominance on Real Data**: Over an extended 28-day holdout, simple persistence heuristics ($t-1$ and $t-7$) outperform the Holt-Winters model on authentic real-world data (MAE $4,086.74 vs $5,091.48).
+2. **Audit Governance Imperative**: Proves that complex smoothing models must be continuously audited against simple seasonal heuristics, as model complexity does not inherently guarantee superior operational accuracy on volatile time series.
 
 ---
 
