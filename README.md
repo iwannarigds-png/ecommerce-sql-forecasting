@@ -29,7 +29,7 @@ A primary objective of this study is demonstrating model validation behavior acr
 | **Imp. vs Simple Naive** | **+14.5%** | **+18.2%** | Holt-Winters demonstrates real value add over simple persistence. |
 | **Imp. vs Seasonal Naive** | **+29.6%** | **+36.2%** | Captures complex multi-day weekly trends better than $t-7$ heuristics. |
 
-*Note: Data transformation pipelines and model initialization protocols use `np.random.seed(42)` to guarantee 100% deterministic reproducibility.*
+*Note: All data transformation pipelines and model initialization protocols use `np.random.seed(42)` to guarantee 100% deterministic reproducibility across multiple runs.*
 
 ### Data Sources & Lineage
 * **Source A (Synthetic Schema)**: Generated via relational SQLite schema mirroring transactional e-commerce metrics.
@@ -39,8 +39,9 @@ A primary objective of this study is demonstrating model validation behavior acr
 ![Synthetic vs Real Benchmark](synthetic_vs_real_benchmark.png)
 
 ### Key Analytical Findings
-1. **Predictive Value Add on Authentic Data**: On real-world e-commerce transaction logs, Holt-Winters Exponential Smoothing outperforms both Simple Naive persistence (+18.2%) and Seasonal Naive persistence (+36.2%), confirming model efficacy on true trended retail data.
-2. **Audit Governance Imperative**: Benchmarking models against both simple ($t-1$) and seasonal ($t-7$) baselines across a 28-day backtest window provides the necessary rigor to prevent over-reliance on unvalidated heuristics.
+1. **Predictive Value Add on Authentic Data**: On real-world e-commerce transaction logs (UCI Online Retail), Holt-Winters Exponential Smoothing outperforms both Simple Naive persistence (+18.2%) and Seasonal Naive persistence (+36.2%), confirming model efficacy on true trended retail data.
+2. **Variance & Outlier Sensitivity (RMSE vs. MAE Gap)**: The elevated RMSE relative to MAE ($28,524.25 vs. $13,732.06) highlights significant daily revenue volatility caused by high-volume wholesale order spikes in the UCI dataset. Because RMSE quadratic penalty accentuates large residual errors, this gap proves the necessity of auditing multiple error metrics alongside MAPE.
+3. **Audit Governance Imperative**: Benchmarking models against both simple ($t-1$) and seasonal ($t-7$) baselines across a 28-day backtest window provides the necessary rigor to prevent over-reliance on unvalidated heuristics.
 
 ---
 
@@ -58,7 +59,7 @@ A primary objective of this study is demonstrating model validation behavior acr
 
 Follow these steps to set up the environment, populate the database, execute SQL analytics, and run the comparative benchmark study locally:
 
-
+```bash
 # 1. Clone the Repository
 git clone [https://github.com/iwannarigds-png/ecommerce-sql-forecasting.git](https://github.com/iwannarigds-png/ecommerce-sql-forecasting.git)
 cd ecommerce-sql-forecasting
