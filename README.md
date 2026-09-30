@@ -1,6 +1,6 @@
 # E-commerce SQL Analytics & Methodological Benchmark Forecasting Study
 
-A comprehensive data engineering, star-schema analytics, and time-series forecasting study designed to evaluate retail revenue trends and perform a **rigorous benchmark comparison between Synthetic Data and Authentic Real-World Series**.
+A comprehensive data engineering, star-schema analytics, and time-series forecasting study designed to evaluate retail revenue trends and perform a **rigorous benchmark comparison between Synthetic Schema Data and Authentic Real-World E-Commerce Transactions**.
 
 ---
 
@@ -9,34 +9,38 @@ A comprehensive data engineering, star-schema analytics, and time-series forecas
 This repository showcases an end-to-end analytical workflow structured around three core pillars:
 1. **Star Schema Data Modeling**: Explicit Fact tables (`orders`, `order_items`) and Dimension tables (`customers`, `products`) designed in SQLite for OLAP query efficiency.
 2. **Advanced SQL Analytics**: Analytical queries utilizing window functions (`DENSE_RANK()`, `SUM() OVER()`), multi-table JOINs, and time-series aggregations for exploratory data analysis on synthetic database schema.
-3. **Methodological Forecasting Benchmark Study**: Implements **Holt-Winters Exponential Smoothing** (`run_comparison.py`) across two distinct data sources to evaluate predictive performance against dual naive baselines (Simple Persistence $t-1$ and Seasonal Persistence $t-7$) over an extended 28-day holdout window.
+3. **Methodological Forecasting Benchmark Study**: Implements **Holt-Winters Exponential Smoothing** (`run_comparison.py`) across two distinct e-commerce datasets to evaluate predictive performance against dual naive baselines (Simple Persistence $t-1$ and Seasonal Persistence $t-7$) over an extended 28-day holdout window.
 
 ---
 
-## Benchmark Study: Unstructured Synthetic vs. Authentic Series
+## Benchmark Study: Synthetic Schema vs. UCI Real E-Commerce Dataset
 
-A primary objective of this study is demonstrating how model evaluation varies significantly between unconstrained synthetic noise and real-world trended time series.
+A primary objective of this study is demonstrating model validation behavior across unstructured synthetic noise and authentic, transactional e-commerce revenue streams.
 
 ### Methodological Benchmark Metrics (28-Day Holdout Evaluation | Fixed Seed: 42)
 
-| Metric (28-Day Holdout Window) | Source A (Unstructured Synthetic) | Source B (AirPassengers Real Demand Series) | Operational Takeaway |
+| Metric (28-Day Holdout Window) | Source A (Synthetic E-Commerce Schema) | Source B (UCI Online Retail Real Dataset) | Operational Takeaway |
 | :--- | :--- | :--- | :--- |
-| **Holt-Winters MAE** | **$1,244.10** | **$5,091.48** | Evaluates absolute forecast drift over a 4-week horizon. |
-| **Holt-Winters RMSE** | **$1,553.45** | **$5,681.15** | Penalizes severe residual deviations. |
-| **Holt-Winters MAPE** | **44.4%** | **28.7%** | Relative percentage error across daily volume. |
-| **Simple Naive MAE ($t-1$)** | $1,454.46 | $4,160.42 | Evaluated against standard daily persistence baseline. |
-| **Seasonal Naive MAE ($t-7$)** | $1,767.89 | $4,086.74 | Evaluated against weekly seasonal persistence baseline. |
-| **Imp. vs Simple Naive** | **+14.5%** | **-22.4%** | Holt-Winters underperforms simple persistence on real series. |
-| **Imp. vs Seasonal Naive** | **+29.6%** | **-24.6%** | Seasonal naive ($t-7$) outperforms Holt-Winters on real series. |
+| **Holt-Winters MAE** | **$1,244.10** | **$13,732.06** | Captures operational forecast error across daily revenue scales. |
+| **Holt-Winters RMSE** | **$1,553.45** | **$28,524.25** | Penalizes high-magnitude residual outliers in transaction spikes. |
+| **Holt-Winters MAPE** | **44.4%** | **27.2%** | Demonstrates stabilized relative accuracy on authentic series. |
+| **Simple Naive MAE ($t-1$)** | $1,454.46 | $16,780.76 | Evaluated against standard daily persistence baseline. |
+| **Seasonal Naive MAE ($t-7$)** | $1,767.89 | $21,510.29 | Evaluated against weekly seasonal persistence baseline. |
+| **Imp. vs Simple Naive** | **+14.5%** | **+18.2%** | Holt-Winters demonstrates real value add over simple persistence. |
+| **Imp. vs Seasonal Naive** | **+29.6%** | **+36.2%** | Captures complex multi-day weekly trends better than $t-7$ heuristics. |
 
-*Note: All data transformation pipelines and model initialization protocols use `np.random.seed(42)` to guarantee 100% deterministic reproducibility.*
+*Note: Data transformation pipelines and model initialization protocols use `np.random.seed(42)` to guarantee 100% deterministic reproducibility.*
+
+### Data Sources & Lineage
+* **Source A (Synthetic Schema)**: Generated via relational SQLite schema mirroring transactional e-commerce metrics.
+* **Source B (UCI Online Retail Dataset)**: Authentic UK-based e-commerce transactional logs aggregated to daily total revenue ($Quantity \times UnitPrice$).
 
 ### Comparative Benchmark Visualization
 ![Synthetic vs Real Benchmark](synthetic_vs_real_benchmark.png)
 
 ### Key Analytical Findings
-1. **Persistence Baseline Dominance on Real Data**: Over an extended 28-day holdout, simple persistence heuristics ($t-1$ and $t-7$) outperform the Holt-Winters model on authentic real-world data (MAE $4,086.74 vs $5,091.48).
-2. **Audit Governance Imperative**: Proves that complex smoothing models must be continuously audited against simple seasonal heuristics, as model complexity does not inherently guarantee superior operational accuracy on volatile time series.
+1. **Predictive Value Add on Authentic Data**: On real-world e-commerce transaction logs, Holt-Winters Exponential Smoothing outperforms both Simple Naive persistence (+18.2%) and Seasonal Naive persistence (+36.2%), confirming model efficacy on true trended retail data.
+2. **Audit Governance Imperative**: Benchmarking models against both simple ($t-1$) and seasonal ($t-7$) baselines across a 28-day backtest window provides the necessary rigor to prevent over-reliance on unvalidated heuristics.
 
 ---
 
