@@ -61,7 +61,7 @@ Follow these steps to set up the environment, populate the database, execute SQL
 
 ```bash
 # 1. Clone the Repository
-git clone [https://github.com/iwannarigds-png/ecommerce-sql-forecasting.git](https://github.com/iwannarigds-png/ecommerce-sql-forecasting.git)
+git clone (https://github.com/iwannarigds-png/ecommerce-sql-forecasting.git)
 cd ecommerce-sql-forecasting
 
 # 2. Set Up Virtual Environment & Dependencies
